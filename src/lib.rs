@@ -15,7 +15,7 @@ pub fn parse_args<'a>(name: &str, about: &str) -> ArgMatches<'a> {
         .get_matches()
 }
 
-pub fn main_inner<'a, F: Fn(usize)>(opts: ArgMatches<'a>, f: F) {
+pub fn main_inner<F: Fn(usize)>(opts: ArgMatches<'_>, f: F) {
     if let Ok(n) = opts
         .value_of("n")
         .map(|n| n.parse())
