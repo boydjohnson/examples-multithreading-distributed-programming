@@ -1,6 +1,8 @@
 use clap::{App, Arg, ArgMatches};
 use std::io::Write;
 
+pub mod matrix_multiplication;
+
 pub fn parse_args<'a>(name: &str, about: &str) -> ArgMatches<'a> {
     App::new(name)
         .about(about)
@@ -15,15 +17,22 @@ pub fn parse_args<'a>(name: &str, about: &str) -> ArgMatches<'a> {
         .get_matches()
 }
 
-pub fn main_inner<F: Fn(usize)>(opts: ArgMatches<'_>, f: F) {
+pub fn main_inner<F: Fn(&[Vec<f64>], &[Vec<f64>]) -> Vec<Vec<f64>>>(
+    opts: ArgMatches<'_>,
+    f: F,
+) -> Option<Vec<Vec<f64>>> {
     if let Ok(n) = opts
         .value_of("n")
         .map(|n| n.parse())
         .unwrap_or_else(|| Ok(100))
     {
-        f(n)
+        let a = vec![vec![1.0; n]; n];
+        let b = vec![vec![1.0; n]; n];
+
+        Some(f(&a, &b))
     } else {
         writeln!(std::io::stderr(), "Could not parse 'n' as usize")
             .expect("Could not write to stderr");
+        None
     }
 }
